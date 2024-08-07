@@ -10,7 +10,7 @@ class BoardOutException(BoardException):
 
 class BoardUsedException(BoardException):
     def __str__(self):
-        return "Вы уже стреляли в эту клетку!"
+        return "Вы уже стреляли в эту клетку"
 
 class BoardWrongShipException(BoardException):
     pass
@@ -50,7 +50,7 @@ class Ship:
 
         return ship_dots
 
-    def hit_or_miss(self, shot):
+    def hit_or_miss(self, shot): # Проверяет, есть попадание или нет
         return shot in self.dots
 
 class Board:
@@ -125,7 +125,7 @@ class Board:
                     print("Корабль подбит!")
                     return True
 
-        self.field[d.x][d.y] = "Т"
+        self.field[d.x][d.y] = "."
         print("Мимо!")
         return False
 
@@ -161,13 +161,13 @@ class AI(Player):
 class User(Player):
     def ask(self):
         while True:
-            coords = input("Ваш ход: ").split()
+            cords = input("Ваш ход: ").split()
 
-            if len(coords) != 2:
+            if len(cords) != 2:
                 print("Введите 2 координаты!")
                 continue
 
-            x, y = coords
+            x, y = cords
 
             if not (x.isdigit()) or not (y.isdigit()):
                 print("Введите числа!")
@@ -190,22 +190,13 @@ class Game:
         self.ai = AI(co, pl)
         self.us = User(pl, co)
 
-    def greet(self):
-        print("-------------------------------------------",
-              " Приветствуем Вас в игре 'Морской бой'",
-              "-------------------------------------------",
-              " формат ввода: x y (через пробел)",
-              " x - номер строки  ",
-              " y - номер столбца ",
-              sep='\n')
-
     def try_board(self):
         board = Board(size=self.size)
         attempts = 0
         for l in self.shipsizes:
             while True:
                 attempts += 1
-                if attempts > 1000:
+                if attempts > 2000:
                     return None
                 ship = Ship(Dot(randint(0, self.size), randint(0, self.size)), l, randint(0, 1))
                 try:
@@ -223,13 +214,13 @@ class Game:
         return board
 
     def print_boards(self):
-        print("-" * 30)
+        print("-" * 20)
         print("Доска пользователя:")
         print(self.us.board)
-        print("-" * 30)
+        print("-" * 20)
         print("Доска компьютера:")
         print(self.ai.board)
-        print("-" * 30)
+        print("-" * 20)
 
     def loop(self):
         num = 0
@@ -246,14 +237,14 @@ class Game:
 
             if self.ai.board.defeat():
                 self.print_boards()
-                print("-" * 30)
-                print("Поздравляем, Вы выиграли!")
+                print("-" * 20)
+                print("Пользователь выиграл!")
                 break
 
             if self.us.board.defeat():
                 self.print_boards()
-                print("-" * 30)
-                print("Увы, компьютер выиграл!")
+                print("-" * 20)
+                print("Компьютер выиграл!")
                 break
             num += 1
         time.sleep(2)
@@ -262,7 +253,14 @@ class Game:
         self.greet()
         self.loop()
 
-
+    def greet(self):
+        print("-------------------------------------------",
+            " Приветствуем Вас в игре 'Морской бой'",
+            "-------------------------------------------",
+            " формат ввода: x y (через пробел)",
+            " x - номер строки  ",
+            " y - номер столбца ",
+            sep='\n')
 
 g = Game()
 g.start()
